@@ -45,9 +45,9 @@ service cloud.firestore {
         && request.resource.data.guestName is string
         && request.resource.data.guestName.size() >= 2
         && request.resource.data.guestName.size() <= 100
-        && exists(/databases/$(database)/documents/reservationLocks/$(request.resource.data.giftId))
-        && get(/databases/$(database)/documents/reservationLocks/$(request.resource.data.giftId)).data.reservationId == reservationId
-        && get(/databases/$(database)/documents/reservationLocks/$(request.resource.data.giftId)).data.giftId == request.resource.data.giftId;
+        && existsAfter(/databases/$(database)/documents/reservationLocks/$(request.resource.data.giftId))
+        && getAfter(/databases/$(database)/documents/reservationLocks/$(request.resource.data.giftId)).data.reservationId == reservationId
+        && getAfter(/databases/$(database)/documents/reservationLocks/$(request.resource.data.giftId)).data.giftId == request.resource.data.giftId;
       allow read, update, delete: if isAdmin();
     }
   }

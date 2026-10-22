@@ -3,6 +3,7 @@ import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from
 import { getFirestore, collection, doc, getDoc, getDocs, onSnapshot, addDoc, setDoc, updateDoc, deleteDoc, query, orderBy, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js";
 import { firebaseConfig } from "./firebase-config.js";
+import giftImages from "./gift-images.js";
 
 const ready = firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith("COLOQUE_") && firebaseConfig.projectId && firebaseConfig.projectId !== "SEU_PROJETO";
 const $ = selector => document.querySelector(selector);
@@ -87,27 +88,124 @@ function renderGifts() {
 }
 $("#admin-gifts").addEventListener("click",async e=>{
   const edit=e.target.closest("[data-edit-gift]"), toggle=e.target.closest("[data-toggle-gift]"), del=e.target.closest("[data-delete-gift]");
-  if(edit){const g=gifts.find(x=>x.id===edit.dataset.editGift);if(!g)return;$("#gift-id").value=g.id;$("#gift-name").value=g.name||"";$("#gift-category").value=g.category||"Outros";$("#gift-price").value=g.price??"";$("#gift-description").value=g.description||"";$("#current-image").textContent=g.imageUrl?"Imagem atual cadastrada.":"";$("#gift-form-title").textContent="Editar presente";$("#cancel-edit").hidden=false;$("#gift-form").scrollIntoView({behavior:"smooth"});return;}
+  if(edit){const g=gifts.find(x=>x.id===edit.dataset.editGift);if(!g)return;$("#gift-id").value=g.id;$("#gift-name").value=g.name||"";$("#gift-category").value=g.category||"Outros";$("#gift-price").value=g.price??"";$("#gift-description").value=g.description||"";$("#gift-image-url").value = g.imageUrl || "";
+
+gallery.querySelectorAll(".gift-image-option").forEach(option => {
+  option.classList.toggle(
+    "selected",
+    option.dataset.imageUrl === g.imageUrl
+  );
+});
+
+if (g.imageUrl) {
+  previewImg.src = g.imageUrl;
+  preview.hidden = false;
+} else {
+  preview.hidden = true;
+  previewImg.removeAttribute("src");
+}$("#current-image").textContent=g.imageUrl?"Imagem atual cadastrada.":"";$("#gift-form-title").textContent="Editar presente";$("#cancel-edit").hidden=false;$("#gift-form").scrollIntoView({behavior:"smooth"});return;}
   if(toggle){const g=gifts.find(x=>x.id===toggle.dataset.toggleGift);if(g)try{await updateDoc(doc(db,"gifts",g.id),{active:g.active===false,updatedAt:serverTimestamp()});}catch(err){alert("Não foi possível atualizar o presente.");}return;}
   if(del){const g=gifts.find(x=>x.id===del.dataset.deleteGift);if(!g)return;if(!confirm(`Excluir "${g.name}"?`))return;try{if(g.imagePath)await deleteObject(ref(storage,g.imagePath)).catch(()=>{});await deleteDoc(doc(db,"gifts",g.id));}catch(err){alert("Não foi possível excluir o presente.");console.error(err);}}
 });
 $("#cancel-edit").addEventListener("click",resetGiftForm);
-function resetGiftForm(){ $("#gift-form").reset();$("#gift-id").value="";$("#gift-form-title").textContent="Adicionar presente";$("#current-image").textContent="";$("#cancel-edit").hidden=true;message($("#gift-status"),""); }
-$("#gift-form").addEventListener("submit",async e=>{
-  e.preventDefault();const btn=e.currentTarget.querySelector('button[type="submit"]');btn.disabled=true;message($("#gift-status"),"Salvando presente…");
-  try{
-    const id=$("#gift-id").value, existing=gifts.find(g=>g.id===id), file=$("#gift-image").files[0];
-    if(file && (!["image/jpeg","image/png"].includes(file.type)||file.size>5*1024*1024))throw new Error("Escolha uma imagem JPG ou PNG de até 5 MB.");
-    let imageUrl=existing?.imageUrl||"", imagePath=existing?.imagePath||"";
-    if(file){const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");imagePath=`gift-images/${Date.now()}-${safeName}`;const storageRef=ref(storage,imagePath);await uploadBytes(storageRef,file,{contentType:file.type});imageUrl=await getDownloadURL(storageRef);}
-    const rawPrice=$("#gift-price").value;
-    const data={name:$("#gift-name").value.trim(),category:$("#gift-category").value,price:rawPrice===""?null:Number(rawPrice),description:$("#gift-description").value.trim(),imageUrl,imagePath,active:existing?.active!==false,updatedAt:serverTimestamp()};
-    if(!data.name)throw new Error("Informe o nome do presente.");
-    if(id)await updateDoc(doc(db,"gifts",id),data);else await addDoc(collection(db,"gifts"),{...data,createdAt:serverTimestamp()});
-    resetGiftForm();message($("#gift-status"),"Presente salvo com sucesso.");
-  }catch(err){message($("#gift-status"),err.message||"Erro ao salvar o presente.",true);console.error(err);}
-  finally{btn.disabled=false;}
+function resetGiftForm(){ $("#gift-form").reset();$("#gift-id").value="";$("#gift-form-title").textContent="Adicionar presente";$("#current-image").textContent="";$("#cancel-edit").hidden=true;$("#gift-image-url").value = "";
+preview.hidden = true;
+previewImg.removeAttribute("src");
+
+gallery.querySelectorAll(".gift-image-option").forEach(option => {
+  option.classList.remove("selected");
+});message($("#gift-status"),""); }
+
+$("#gift-form").addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const btn = e.currentTarget.querySelector('button[type="submit"]');
+  btn.disabled = true;
+  message($("#gift-status"), "Salvando presente…");
+
+  try {
+    const id = $("#gift-id").value;
+    const existing = gifts.find(g => g.id === id);
+    const selectedImage = $("#gift-image-url").value;
+
+    const rawPrice = $("#gift-price").value;
+
+    const data = {
+      name: $("#gift-name").value.trim(),
+      category: $("#gift-category").value,
+      price: rawPrice === "" ? null : Number(rawPrice),
+      description: $("#gift-description").value.trim(),
+      imageUrl: selectedImage || existing?.imageUrl || "",
+      imagePath: "",
+      active: existing?.active !== false,
+      updatedAt: serverTimestamp()
+    };
+
+    if (!data.name) {
+      throw new Error("Informe o nome do presente.");
+    }
+
+    if (id) {
+      await updateDoc(doc(db, "gifts", id), data);
+    } else {
+      await addDoc(collection(db, "gifts"), {
+        ...data,
+        createdAt: serverTimestamp()
+      });
+    }
+
+    resetGiftForm();
+    message($("#gift-status"), "Presente salvo com sucesso.");
+  } catch (err) {
+    message(
+      $("#gift-status"),
+      err.message || "Erro ao salvar o presente.",
+      true
+    );
+    console.error(err);
+  } finally {
+    btn.disabled = false;
+  }
 });
+
+const gallery = $("#gift-image-gallery");
+const imageUrlInput = $("#gift-image-url");
+const preview = $("#selected-image-preview");
+const previewImg = $("#selected-image-preview-img");
+
+function renderGiftImageGallery() {
+  gallery.innerHTML = giftImages.map(image => `
+    <button
+      type="button"
+      class="gift-image-option"
+      data-image-url="${esc(image.url)}"
+      aria-label="Selecionar ${esc(image.name)}"
+    >
+      <img src="${esc(image.url)}" alt="${esc(image.name)}" loading="lazy">
+      <span>${esc(image.name)}</span>
+    </button>
+  `).join("");
+}
+
+renderGiftImageGallery();
+
+gallery.addEventListener("click", e => {
+  const button = e.target.closest("[data-image-url]");
+  if (!button) return;
+
+  const url = button.dataset.imageUrl;
+  imageUrlInput.value = url;
+
+  gallery.querySelectorAll(".gift-image-option").forEach(option => {
+    option.classList.toggle("selected", option === button);
+  });
+
+  previewImg.src = url;
+  preview.hidden = false;
+  $("#current-image").textContent = "Nova foto selecionada.";
+});
+
+
 function renderReservations(){
   $("#reservations-list").innerHTML=reservations.map(r=>`<tr><td>${esc(r.giftName||gifts.find(g=>g.id===r.giftId)?.name||"Presente")}</td><td>${esc(r.guestName||"—")}</td><td>${dateLabel(r.createdAt)}</td><td><button class="table-action danger" data-release="${r.id}" data-gift-id="${r.giftId}">Liberar reserva</button></td></tr>`).join("")||`<tr><td colspan="4">Nenhuma reserva até agora.</td></tr>`;
 }

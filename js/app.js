@@ -39,9 +39,61 @@ function renderGift(gift) {
 }
 function watchPublicGifts(db) {
   const q = query(collection(db, "gifts"), where("active", "==", true));
+
+  let currentGifts = [];
+  const lockUnsubscribers = new Map();
+
+  function renderCurrentGifts() {
+    giftList.innerHTML = currentGifts.length
+      ? currentGifts.map(renderGift).join("")
+      : "<p>Nenhum presente disponível no momento.</p>";
+  }
+
   onSnapshot(q, snap => {
-    const gifts = snap.docs.map(d => ({ id:d.id, ...d.data() })).sort((a,b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
-    giftList.innerHTML = gifts.length ? gifts.map(renderGift).join("") : `<div class="empty-state">A lista de presentes será publicada em breve. ♡</div>`;
+    currentGifts = snap.docs.map(d => ({
+      id: d.id,
+      ...d.data()
+    })).sort((a, b) =>
+      (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0)
+    );
+
+    const activeIds = new Set(currentGifts.map(gift => gift.id));
+
+    // Remove os acompanhamentos dos presentes que saíram da lista
+    for (const [id, unsubscribe] of lockUnsubscribers) {
+      if (!activeIds.has(id)) {
+        unsubscribe();
+        lockUnsubscribers.delete(id);
+      }
+    }
+
+    // Acompanha a reserva de cada presente individualmente
+    for (const gift of currentGifts) {
+      if (!lockUnsubscribers.has(gift.id)) {
+        const unsubscribe = onSnapshot(
+          doc(db, "reservationLocks", gift.id),
+          lockSnap => {
+            const currentGift = currentGifts.find(g => g.id === gift.id);
+
+            if (currentGift) {
+              currentGift.reserved = lockSnap.exists();
+              renderCurrentGifts();
+            }
+          },
+          error => {
+            console.error("Erro ao verificar reserva:", error);
+          }
+        );
+
+        lockUnsubscribers.set(gift.id, unsubscribe);
+      }
+    }
+
+    renderCurrentGifts();
+
+    giftList.innerHTML = currentGifts.length
+      ? currentGifts.map(renderGift).join("")
+      : `<div class="empty-state">A lista de presentes será publicada em breve. ♡</div>`;
   }, error => {
     console.error(error);
     giftList.innerHTML = `<div class="empty-state">Não foi possível carregar a lista agora. Tente novamente mais tarde.</div>`;
@@ -72,6 +124,7 @@ function watchPublicGifts(db) {
     }
   });
 }
+
 async function loadEvent(db) {
   try {
     const snap = await getDoc(doc(db, "settings", "event"));
