@@ -7,3 +7,178 @@
 @media(max-width:900px){.site-header{padding:0 5%}.main-nav{gap:15px}.hero{padding-left:6%;padding-right:6%}.hero-art{transform:scale(.9)}.gift-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.site-header{position:relative;min-height:65px;flex-wrap:wrap;padding:14px 5%}.menu-toggle{display:block}.main-nav{display:none;flex-basis:100%;flex-direction:column;gap:0;padding:8px 0}.main-nav.open{display:flex}.main-nav a{padding:10px 2px}.hero{grid-template-columns:1fr;padding:45px 7% 52px;text-align:center}.hero-copy{margin:auto;padding:0}.hero .eyebrow{justify-content:center;font-size:8px;letter-spacing:.13em}.hero .eyebrow span{width:16px}h1{font-size:clamp(58px,15vw,80px)}.hero-subtitle{font-size:19px}.baby-name{justify-content:center}.hero-art{min-height:350px;margin-top:12px;transform:scale(.82);transform-origin:top center}.sun-disc{width:290px}.hero-bottom-note{bottom:15px;font-size:10px}.section{padding:65px 6%}.section-heading{margin-bottom:28px}.detail-grid{grid-template-columns:1fr;gap:12px}.detail-card{padding:23px 15px}.gift-grid{gap:12px}.gift-image,.gift-placeholder{height:110px}.gift-info{padding:14px 11px}.gift-info h3{font-size:16px}.gift-info p{font-size:10px}.gift-info .button{font-size:9px}.rsvp-section{padding:60px 5%}.rsvp-card{padding:31px 22px}.rsvp-card h2{font-size:30px}.rsvp-decoration{font-size:44px}.rsvp-decoration.left{top:3%;left:3%}.rsvp-decoration.right{right:3%;bottom:3%}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition-duration:.01ms!important}}
+/* Dress code */
+.dress-code-colors {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0 10px;
+}
+
+.dress-color {
+  display: inline-block;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(80, 60, 40, 0.18);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.dress-white {
+  background-color: #ffffff;
+}
+
+.dress-beige {
+  background-color: #dfc9a8;
+}
+
+.dress-brown {
+  background-color: #79543b;
+}
+
+.dress-code-label {
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+}
+
+/* Vídeo decorativo da seção principal */
+.hero-video {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.baby-video {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  max-height: 600px;
+  object-fit: contain;
+  border-radius: 20px;
+}
+
+/* Vídeo circular na capa */
+.hero-video {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.baby-video {
+  display: block;
+  width: min(34vw, 440px);
+  aspect-ratio: 1 / 1;
+  height: auto;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 5px solid #dfc49a;
+  outline: 1px solid rgba(160, 123, 65, 0.35);
+  outline-offset: 6px;
+  box-shadow: 0 12px 35px rgba(92, 66, 42, 0.16);
+}
+
+/* Ajuste para celulares */
+@media (max-width: 768px) {
+  .baby-video {
+    width: min(72vw, 360px);
+    border-width: 4px;
+    outline-offset: 4px;
+  }
+}
+
+
+/* Enfeites delicados ao redor do vídeo */
+.hero-video {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+}
+
+.hero-video::before {
+  content: "";
+  position: absolute;
+  width: min(37vw, 470px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(184, 149, 88, 0.42);
+  border-radius: 50%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.hero-video::after {
+  content: "✦";
+  position: absolute;
+  top: 8%;
+  right: 4%;
+  color: #b89558;
+  font-size: 28px;
+  text-shadow: 0 0 14px rgba(184, 149, 88, 0.25);
+  pointer-events: none;
+}
+
+.hero-video .baby-video {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-video .video-decoration {
+  position: absolute;
+  z-index: 2;
+  color: #b89558;
+  pointer-events: none;
+  line-height: 1;
+}
+
+.hero-video .sparkle-one {
+  top: 12%;
+  left: 8%;
+  font-size: 24px;
+}
+
+.hero-video .sparkle-two {
+  bottom: 13%;
+  right: 7%;
+  font-size: 20px;
+}
+
+.hero-video .heart-one {
+  top: 28%;
+  right: 0;
+  font-size: 25px;
+}
+
+.hero-video .heart-two {
+  bottom: 23%;
+  left: 1%;
+  font-size: 21px;
+}
+
+.hero-video .tiny-star {
+  top: 50%;
+  left: 0;
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .hero-video::before {
+    width: min(79vw, 390px);
+  }
+
+  .hero-video::after {
+    top: 5%;
+    right: 5%;
+    font-size: 23px;
+  }
+
+  .hero-video .sparkle-one {
+    left: 5%;
+  }
+
+  .hero-video .heart-one {
+    right: 1%;
+  }
+}

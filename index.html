@@ -27,11 +27,27 @@
       <div class="baby-name"><span></span><div><small>Esperando com amor</small><strong id="baby-name">Nome do bebê</strong></div><span></span></div>
       <a class="button button-gold" href="#detalhes">Ver detalhes do encontro <b>↓</b></a>
     </div>
-    <div class="hero-art" aria-label="Ilustração decorativa de ursinho">
-      <div class="sun-disc"></div><span class="sparkle s1">✦</span><span class="sparkle s2">✧</span><span class="sparkle s3">✦</span>
-      <div class="bear"><div class="ear ear-left"><i></i></div><div class="ear ear-right"><i></i></div><div class="bear-head"><span class="eye eye-left"></span><span class="eye eye-right"></span><span class="snout"><i></i></span><span class="cheek cheek-left"></span><span class="cheek cheek-right"></span></div><div class="bear-body"><div class="belly"></div><div class="bow"><i></i><b></b><i></i></div></div><div class="bear-arm arm-left"></div><div class="bear-arm arm-right"></div><div class="bear-foot foot-left"></div><div class="bear-foot foot-right"></div></div>
-      <span class="floating-heart h1">♡</span><span class="floating-heart h2">♡</span><p class="art-caption">feito de carinho<br>e muitos sonhos</p>
+    <div class="hero-art hero-video" aria-label="Vídeo decorativo de ursinhos">
+      <span class="video-decoration sparkle-one">✧</span>
+      <span class="video-decoration sparkle-two">✦</span>
+      <span class="video-decoration heart-one">♡</span>
+      <span class="video-decoration heart-two">♡</span>
+      <span class="video-decoration tiny-star">✧</span>
+
+      <video
+        class="baby-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        aria-label="Vídeo decorativo do convite de chá de bebê"
+      >
+        <source src="./image/video.mp4" type="video/mp4">
+        Seu navegador não conseguiu reproduzir este vídeo.
+      </video>
     </div>
+
     <div class="hero-bottom-note">✧ &nbsp; Uma nova história começa &nbsp; ✧</div>
   </section>
   <section class="section details" id="detalhes">
@@ -39,7 +55,18 @@
     <div class="detail-grid">
       <article class="detail-card"><span class="detail-icon">♡</span><small>QUANDO</small><h3 id="event-date">29 de Novembro de 2026</h3><p id="event-time">Horário a confirmar</p></article>
       <article class="detail-card"><span class="detail-icon">⌖</span><small>ONDE</small><h3 id="event-location">Local do evento</h3><p id="event-address">Endereço completo aqui</p><a id="map-link" class="text-link" href="#" target="_blank" rel="noopener" hidden>Ver localização ↗</a></article>
-      <article class="detail-card"><span class="detail-icon">♡</span><small>COM CARINHO</small><h3>Venha confortável</h3><p>O mais importante é sua presença.</p></article>
+      <article class="detail-card dress-code-card">
+        <span class="detail-icon">♡</span>
+        <small>DRESS CODE</small>
+        <h3>Cores do nosso encontro</h3>
+        <p>Escolha seu look em tons de branco, bege ou marrom.</p>
+        <div class="dress-code-colors" aria-label="Cores sugeridas: branco, bege e marrom">
+          <span class="dress-color dress-white" title="Branco"></span>
+          <span class="dress-color dress-beige" title="Bege"></span>
+          <span class="dress-color dress-brown" title="Marrom"></span>
+        </div>
+        <p class="dress-code-label">Branco · Bege · Marrom</p>
+      </article>
     </div>
     <p class="details-note">✦ &nbsp; Um dia doce para guardar no coração &nbsp; ✦</p>
   </section>
@@ -62,5 +89,8 @@
   </section>
   <section class="closing-note"><div class="tiny-bear">🧸</div><p>Mal podemos esperar para compartilhar esse momento com você.</p><h2>Com amor, Stefany e Cristiano</h2><span>✦　♡　✦</span></section>
 </main>
-<footer class="site-footer"><span>Feito com carinho para celebrar uma nova vida</span><a href="admin.html">Área administrativa</a><span>♡</span></footer>
+<footer class="site-footer">
+  <span>Feito com carinho para celebrar uma nova vida</span>
+  <span>♡</span>
+</footer>
 </body></html>
