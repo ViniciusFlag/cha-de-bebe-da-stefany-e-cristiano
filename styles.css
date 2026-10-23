@@ -182,3 +182,188 @@
     right: 1%;
   }
 }
+
+
+/* ========================================
+   PRESENTES — CARDS REFINADOS E RESPONSIVOS
+======================================== */
+
+.gift-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+
+.gift-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  background: #fffdf9;
+  border: 1px solid #e8dccb;
+  border-radius: 10px;
+  box-shadow: 0 5px 18px rgba(92, 70, 47, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.gift-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(92, 70, 47, 0.12);
+}
+
+/* Área da imagem */
+.gift-image,
+.gift-placeholder {
+  width: 100%;
+  height: 230px;
+  flex-shrink: 0;
+  background: #f7f1e8;
+}
+
+.gift-image {
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  padding: 10px;
+}
+
+.gift-placeholder {
+  display: grid;
+  place-items: center;
+  font-size: 54px;
+}
+
+/* Informações do presente */
+.gift-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 20px 18px;
+}
+
+.gift-category {
+  margin-bottom: 7px;
+  color: #967641;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.gift-info h3 {
+  margin: 0 0 10px;
+  color: #4e3c31;
+  font-size: 21px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.gift-info p {
+  min-height: 0;
+  margin: 0 0 16px;
+  color: #8d7b6b;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.gift-price {
+  margin-top: auto;
+  margin-bottom: 15px;
+  color: #795f3f;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Botão de reserva */
+.gift-info .button {
+  width: 100%;
+  min-height: 46px;
+  margin-top: auto;
+  padding: 10px 12px;
+  border: 1px solid #d8c8b3;
+  border-radius: 5px;
+  background: #fffdf9;
+  color: #6f5948;
+  font-size: 11px;
+  font-weight: 600;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.gift-info .button:hover {
+  background: #f4ebde;
+  border-color: #b99a5c;
+}
+
+.gift-state {
+  margin-top: 10px;
+}
+
+/* Tablets: dois cards por linha */
+@media (max-width: 900px) {
+  .gift-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .gift-image,
+  .gift-placeholder {
+    height: 220px;
+  }
+}
+
+/* Celulares: somente um card por linha */
+@media (max-width: 650px) {
+  .gift-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+  }
+
+  .gift-card {
+    width: 100%;
+    border-radius: 10px;
+  }
+
+  .gift-image,
+  .gift-placeholder {
+    height: 260px;
+  }
+
+  .gift-image {
+    padding: 12px;
+  }
+
+  .gift-info {
+    padding: 22px 20px;
+  }
+
+  .gift-category {
+    font-size: 10px;
+  }
+
+  .gift-info h3 {
+    font-size: 23px;
+  }
+
+  .gift-info p {
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .gift-info .button {
+    min-height: 48px;
+    font-size: 12px;
+  }
+}
+
+/* Celulares muito estreitos */
+@media (max-width: 380px) {
+  .gift-image,
+  .gift-placeholder {
+    height: 220px;
+  }
+
+  .gift-info {
+    padding: 18px 15px;
+  }
+}
